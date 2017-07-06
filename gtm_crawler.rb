@@ -20,6 +20,7 @@ class GTM_Crawler
 		# request url, ignore errored pages
 		begin
  			page = @agent.get(url)
+			if page.class != Mechanize::Page then return end
 		rescue Exception => e
 			return
 		end
@@ -32,8 +33,8 @@ class GTM_Crawler
 			s = link.href.to_s || ""
 			unless s.empty? || (s.include?("http") && !s.include?(@domain)) || (s =~ /mailto|javascript:/)
 				if s.include?(@domain)
-					 @base_url = s.match(/(.+#{@domaintld})/i).captures[0]
-					 s = s.match(/#{@domaintld}(.+)/i).nil? ? @base_url + "/" : @base_url + s.match(/com(.+)/i).captures[0]
+					@base_url = s.match(/(.+#{@domaintld})/i).captures[0]
+					s = s.match(/#{@domaintld}(.+)/i).nil? ? @base_url + "/" : @base_url + s.match(/com(.+)/i).captures[0]
 				else
 					s = @base_url + s
 				end
